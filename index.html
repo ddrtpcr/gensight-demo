@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gensight</title>
+    <title>Gensight AI</title>
     <style>
         body {
             margin: 0;
@@ -86,7 +86,7 @@
             margin: 0 8px;
         }
         .avatar.user { background: #007AFF; }
-        .avatar.ai { background: #8E8E93; }
+        .avatar.ai { background: #84B876; }
         .content-msg {
             max-width: 80%;
             display: flex;
@@ -112,6 +112,29 @@
             background: #F1F0F0;
             color: #333;
             border-bottom-left-radius: 0;
+        }
+        /* Welcome message on home page */
+        .welcome-message {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            margin: 10px 0 15px;
+        }
+        /* Disclaimer text above chat input */
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        /* Smaller heading for upload instruction */
+        .file-upload h2 {
+            /* Make the upload instruction smaller than the header and welcome message */
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
         /* Input bar */
         .input-bar {
@@ -143,13 +166,20 @@
 </head>
 <body>
     <div class="overlay" id="app">
-        <div class="header">Gensight</div>
+        <div class="header">Gensight AI</div>
+        <!-- Welcome message placed between header and upload section -->
+        <!-- Welcome message is placed between the header and the upload section. It uses the same font size and weight as the header. -->
+        <p class="welcome-message" id="welcomeMessage">Welcome to Gensight AI! We help you translate complex genetic reports into clear, empathetic answers.</p>
         <div class="file-upload" id="uploadContainer">
             <h2>Upload your genetic report to begin</h2>
             <input type="file" id="fileInput" />
-            <button class="start-button" id="startButton">Start Demo</button>
+            <button class="start-button" id="startButton">Start</button>
         </div>
         <div class="content" id="chatContainer" style="display:none;"></div>
+        <!-- Disclaimer shown above the input bar when chat starts -->
+        <div class="disclaimer" id="disclaimer" style="display:none;">
+            All interpretations are for informational purposes only. Please consult with your doctor before making any decisions.
+        </div>
         <div class="input-bar" id="inputBar" style="display:none;">
             <input type="text" id="userInput" placeholder="Type your message here..." />
             <button id="sendButton">Send</button>
@@ -163,6 +193,10 @@
         const inputBar = document.getElementById('inputBar');
         const userInput = document.getElementById('userInput');
         const sendButton = document.getElementById('sendButton');
+        // Disclaimer element
+        const disclaimer = document.getElementById('disclaimer');
+        // Welcome message element (used to hide it once chat begins)
+        const welcomeMessage = document.getElementById('welcomeMessage');
 
         const aiResponses = [
             `This report has found the root cause of your child's symptoms: he has a rare genetic disorder called Lesch-Nyhan Syndrome (LNS).
@@ -241,15 +275,27 @@ Make appointments with two types of specialists, bringing this report directly:
         });
 
         function beginDemo() {
+            // Hide the upload area and the welcome message
             uploadContainer.style.display = 'none';
+            if (welcomeMessage) {
+                welcomeMessage.style.display = 'none';
+            }
+            // Show the chat area and input bar
             chatContainer.style.display = 'flex';
             inputBar.style.display = 'flex';
+            // Clear any existing chat content and reset AI index
             chatContainer.innerHTML = '';
             aiIndex = 0;
+            // Send the initial greeting from the AI
             addMessage('ai', 'Hello, thank you for trusting me. What can I help?', 'G');
+            // Enable the input for the user
             userInput.disabled = false;
             sendButton.disabled = false;
             userInput.placeholder = 'Type your message here...';
+            // Show the disclaimer when chat starts
+            if (disclaimer) {
+                disclaimer.style.display = 'block';
+            }
         }
 
         function handleUserInput() {
@@ -278,9 +324,10 @@ Make appointments with two types of specialists, bringing this report directly:
                 addMessage('ai', response, 'G');
                 aiIndex++;
                 if (aiIndex >= aiResponses.length) {
+                    // Disable further input once all AI responses are used
                     userInput.disabled = true;
                     sendButton.disabled = true;
-                    userInput.placeholder = 'Conversation ended';
+                    // Keep the placeholder text as default without changing it to 'Conversation ended'
                 }
             }, 1000);
         }
@@ -300,7 +347,14 @@ Make appointments with two types of specialists, bringing this report directly:
 
             const nameDiv = document.createElement('div');
             nameDiv.classList.add('name');
-            nameDiv.textContent = nameLetter;
+            // Determine display name based on sender
+            let displayName;
+            if (sender.toLowerCase() === 'ai') {
+                displayName = 'Gensight AI';
+            } else {
+                displayName = 'Mother';
+            }
+            nameDiv.textContent = displayName;
 
             const bubbleDiv = document.createElement('div');
             bubbleDiv.classList.add('bubble');
