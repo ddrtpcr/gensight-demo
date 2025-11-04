@@ -115,11 +115,14 @@
         }
         /* Welcome message on home page */
         .welcome-message {
-            font-size: 1.5rem;
+            /* Make the welcome message slightly smaller than the main header */
+            font-size: 1.2rem;
             font-weight: bold;
             color: #000;
             text-align: center;
-            margin: 10px 0 15px;
+            /* Add top margin to separate it from the header (approx two lines below) */
+            margin-top: 30px;
+            margin-bottom: 15px;
         }
         /* Disclaimer text above chat input */
         .disclaimer {
@@ -173,6 +176,8 @@
         <div class="file-upload" id="uploadContainer">
             <h2>Upload your genetic report to begin</h2>
             <input type="file" id="fileInput" />
+            <!-- Button to remove the selected file (hidden by default) -->
+            <button id="removeFileButton" style="display:none; margin-top: 10px; padding: 5px 10px; font-size: 0.8rem; background: #ccc; border: none; border-radius: 10px; cursor: pointer;">Remove File</button>
             <button class="start-button" id="startButton">Start</button>
         </div>
         <div class="content" id="chatContainer" style="display:none;"></div>
@@ -195,6 +200,8 @@
         const sendButton = document.getElementById('sendButton');
         // Disclaimer element
         const disclaimer = document.getElementById('disclaimer');
+        // Remove file button element
+        const removeFileButton = document.getElementById('removeFileButton');
         // Welcome message element (used to hide it once chat begins)
         const welcomeMessage = document.getElementById('welcomeMessage');
 
@@ -255,12 +262,18 @@ Make appointments with two types of specialists, bringing this report directly:
         let aiIndex = 0;
 
         // Event listeners
-        // Start the demo when the user clicks the Start Demo button or selects a file
+        // Start the demo only when the user clicks the Start button
         startButton.addEventListener('click', function() {
             beginDemo();
         });
+        // When the user selects a file, display the remove button and allow further changes
         fileInput.addEventListener('change', function() {
-            beginDemo();
+            // Show the remove file button if a file is selected
+            if (fileInput.files && fileInput.files.length > 0) {
+                removeFileButton.style.display = 'inline-block';
+            } else {
+                removeFileButton.style.display = 'none';
+            }
         });
         
         // Handle send button click and Enter key press for submitting user input
@@ -273,6 +286,15 @@ Make appointments with two types of specialists, bringing this report directly:
                 handleUserInput();
             }
         });
+
+        // Remove the selected file when the remove file button is clicked
+        if (removeFileButton) {
+            removeFileButton.addEventListener('click', function() {
+                fileInput.value = '';
+                // Hide the remove file button
+                removeFileButton.style.display = 'none';
+            });
+        }
 
         function beginDemo() {
             // Hide the upload area and the welcome message
