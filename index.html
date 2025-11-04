@@ -46,8 +46,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            /* Align items toward the top instead of centering them vertically */
+            justify-content: flex-start;
             flex: 1;
+            /* Add top margin to position the upload section slightly higher */
+            margin-top: 20px;
         }
         .file-upload input[type="file"] {
             margin: 15px 0;
@@ -134,10 +137,19 @@
 
         /* Smaller heading for upload instruction */
         .file-upload h2 {
-            /* Make the upload instruction smaller than the header and welcome message */
-            font-size: 1rem;
+            /* Increase the instruction font size while keeping it smaller than the welcome message */
+            font-size: 1.1rem;
             font-weight: bold;
             margin-bottom: 15px;
+        }
+
+        /* Wrapper for file input and remove file button */
+        .file-input-wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
         }
         /* Input bar */
         .input-bar {
@@ -175,10 +187,13 @@
         <p class="welcome-message" id="welcomeMessage">Welcome to Gensight AI! We help you translate complex genetic reports into clear, empathetic answers.</p>
         <div class="file-upload" id="uploadContainer">
             <h2>Upload your genetic report to begin</h2>
-            <input type="file" id="fileInput" />
-            <!-- Button to remove the selected file (hidden by default) -->
-            <button id="removeFileButton" style="display:none; margin-top: 10px; padding: 5px 10px; font-size: 0.8rem; background: #ccc; border: none; border-radius: 10px; cursor: pointer;">Remove File</button>
-            <button class="start-button" id="startButton">Start</button>
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" />
+                <!-- Button to remove the selected file (hidden by default) -->
+                <button id="removeFileButton" style="display:none; padding: 5px 10px; font-size: 0.8rem; background: #ccc; border: none; border-radius: 10px; cursor: pointer;">Remove File</button>
+            </div>
+            <!-- Start button is placed below with extra top margin to create spacing -->
+            <button class="start-button" id="startButton" style="margin-top: 30px;">Start</button>
         </div>
         <div class="content" id="chatContainer" style="display:none;"></div>
         <!-- Disclaimer shown above the input bar when chat starts -->
